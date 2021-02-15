@@ -36,7 +36,7 @@ const ROASTS: &[&str] = &[
 #[commands(roast)]
 struct RoastMe;
 
-#[command("fuck you foxie")]
+#[command("fuckyoufoxie")]
 async fn roast(ctx: &Context, msg: &Message) -> CommandResult {
     msg.reply(ctx, ROASTS[rand::random::<usize>() % ROASTS.len()].clone()).await?;
 
