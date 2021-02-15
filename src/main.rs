@@ -13,11 +13,10 @@ use serenity::framework::standard::{
         group
     }
 };
+use std::env;
 use images::IMAGES_GROUP;
 use dirty_talk::DIRTYTALK_GROUP;
 use roastme::ROASTME_GROUP;
-
-const TOKEN: &str = "ODEwNzUzMDEzMjE5MDY1OTE3.YCoOlQ.F5QcHoIZ2cBhwIeFpWCPDza7rgc";
 
 struct Handler;
 
@@ -26,13 +25,16 @@ impl EventHandler for Handler {}
 
 #[tokio::main]
 async fn main() {
+    let args: Vec<String> = env::args().collect();
+    let token = args[1].clone();
+
     let framework = StandardFramework::new()
         .configure(|c| c.prefix("!"))
         .group(&IMAGES_GROUP)
         .group(&DIRTYTALK_GROUP)
         .group(&ROASTME_GROUP);
 
-    let mut client = Client::builder(TOKEN)
+    let mut client = Client::builder(token)
         .event_handler(Handler)
         .framework(framework)
         .await
