@@ -1,22 +1,30 @@
-mod images;
-mod dirty_talk;
-mod roastme;
+mod fun;
+mod math;
 
+use fun::FUN_GROUP;
+use math::MATH_GROUP;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
-use serenity::model::channel::Message;
 use serenity::framework::standard::{
-    StandardFramework,
-    CommandResult,
-    macros::{
-        command,
-        group
-    }
+    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
 };
+use serenity::model::channel::Message;
+use serenity::model::id::UserId;
+use std::collections::HashSet;
 use std::env;
-use images::IMAGES_GROUP;
-use dirty_talk::DIRTYTALK_GROUP;
-use roastme::ROASTME_GROUP;
+
+#[help]
+async fn help(
+    context: &Context,
+    msg: &Message,
+    args: Args,
+    help_options: &'static HelpOptions,
+    groups: &[&'static CommandGroup],
+    owners: HashSet<UserId>,
+) -> CommandResult {
+    let _ = help_commands::with_embeds(context, msg, args, help_options, groups, owners).await;
+    Ok(())
+}
 
 struct Handler;
 
@@ -30,9 +38,9 @@ async fn main() {
 
     let framework = StandardFramework::new()
         .configure(|c| c.prefix("!"))
-        .group(&IMAGES_GROUP)
-        .group(&DIRTYTALK_GROUP)
-        .group(&ROASTME_GROUP);
+        .group(&MATH_GROUP)
+        .group(&FUN_GROUP)
+        .help(&HELP);
 
     let mut client = Client::builder(token)
         .event_handler(Handler)
