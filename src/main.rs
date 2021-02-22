@@ -1,17 +1,22 @@
-mod fun;
-mod math;
+use std::collections::HashSet;
+use std::env;
+use std::fs::{File, OpenOptions};
 
-use fun::FUN_GROUP;
-use math::MATH_GROUP;
+use log::error;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
-    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
+    Args, CommandGroup, CommandResult, help_commands, HelpOptions, macros::help, StandardFramework,
 };
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
-use std::collections::HashSet;
-use std::env;
+use simplelog::*;
+
+use fun::FUN_GROUP;
+use math::MATH_GROUP;
+
+mod fun;
+mod math;
 
 #[help]
 async fn help(
@@ -33,6 +38,14 @@ impl EventHandler for Handler {}
 
 #[tokio::main]
 async fn main() {
+    // Setup Logging
+    CombinedLogger::init(
+        vec![
+            WriteLogger::new(LevelFilter::Info, Config::default(), OpenOptions::new().write(true).create(true).open("log.txt").expect("Could not open log file")),
+            TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
+    ]).expect("Could not set up logger");
+    error!("test");
+
     let args: Vec<String> = env::args().collect();
     let token = args[1].clone();
 
@@ -49,6 +62,6 @@ async fn main() {
         .expect("Error creating client");
 
     if let Err(why) = client.start().await {
-        println!("An error occurred while running the client: {:?}", why);
+        error!("An error occurred while running the client: {:?}", why);
     }
 }

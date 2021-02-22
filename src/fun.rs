@@ -1,11 +1,10 @@
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
 use serenity::client::Context;
-use serenity::framework::standard::{
-    macros::{command, group},
-    CommandResult,
-};
+use serenity::framework::standard::{macros::{command, group}, CommandResult, Args};
 use serenity::model::channel::Message;
+use meval::ContextProvider;
+use log::{info, error};
 
 const HOT_PHRASES: &[&str] = &[
     "I need you right now.",
@@ -66,29 +65,9 @@ async fn hot(ctx: &Context, msg: &Message) -> CommandResult {
 #[command("fuckyoufoxie")]
 /// Asks Foxie to roast you
 async fn roast(ctx: &Context, msg: &Message) -> CommandResult {
+    info!("{} asked for a roast", msg.author.name);
+
     msg.channel_id.broadcast_typing(ctx).await?;
-
-    match msg.channel_id.name(ctx).await {
-        Some(s) => {
-            if s != "fox".to_string() {
-                msg.reply(
-                    ctx,
-                    "I will only respond to your *needs* in the #fox channel",
-                )
-                .await?;
-                return Ok(());
-            }
-        }
-        None => {
-            msg.reply(
-                ctx,
-                "I can't tell what channel you're in, so I am not going to respond",
-            )
-            .await?;
-            return Ok(());
-        }
-    }
-
     let roast = get_roast().await;
 
     msg.reply(ctx, roast).await?;
@@ -107,7 +86,7 @@ async fn get_roast() -> String {
     {
         Ok(p) => posts = p,
         Err(_) => {
-            println!("Could not get posts from reddit");
+            error!("Could not get posts from reddit");
             return get_preset_random();
         }
     }
@@ -121,7 +100,7 @@ async fn get_roast() -> String {
     }
 
     if !post.selftext.is_empty() {
-        println!("Could not find good post");
+        error!("Could not find a good roast, using predefined one...");
         return get_preset_random();
     }
     post.title.clone()
@@ -136,6 +115,8 @@ fn get_preset_random() -> String {
 #[command]
 /// Asks Foxie for a meme
 async fn meme(ctx: &Context, msg: &Message) -> CommandResult {
+    info!("{} asked for a meme", msg.author.name);
+
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(ctx, get_meme().await).await?;
 
@@ -153,7 +134,7 @@ async fn get_meme() -> String {
     {
         Ok(p) => posts = p,
         Err(_) => {
-            println!("Could not get posts from reddit");
+            error!("Could not get posts from reddit");
             return "Idk man".to_string();
         }
     }
