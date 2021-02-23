@@ -5,6 +5,8 @@ use serenity::framework::standard::{macros::{command, group}, CommandResult, Arg
 use serenity::model::channel::Message;
 use meval::ContextProvider;
 use log::{info, error};
+use super::checks::IS_BOT_OWNER_CHECK;
+use super::reddit_helpers::*;
 
 const HOT_PHRASES: &[&str] = &[
     "I need you right now.",
@@ -46,7 +48,7 @@ const ROASTS: &[&str] = &[
     "awww don’t hate me cause i’m beatiful, maybe if you got rid of the ol yee yee ass haircut you got, you’d get some bitches on ya dick, oh, better yet, maybe tanisha would call your dog ass if she ever stop fucking with that brain surgeon or lawyer she fuckin with,"];
 
 #[group]
-#[commands(hot, roast, meme)]
+#[commands(hot, roast, meme, retard_meme, hentai, hotmen)]
 struct Fun;
 
 #[command]
@@ -118,31 +120,42 @@ async fn meme(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for a meme", msg.author.name);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, get_meme().await).await?;
+    msg.reply(ctx, get_top_image_from_subreddit("memes", TimePeriod::ThisWeek).await).await?;
 
     Ok(())
 }
 
-/// Gets a random meme from Reddit's r/memes subreddit from the last month.
-async fn get_meme() -> String {
-    // Get top 300 top posts from the last week
-    let subreddit = Subreddit::new("memes");
-    let posts;
-    match subreddit
-        .top(45, Some(FeedOption::new().period(TimePeriod::ThisWeek)))
-        .await
-    {
-        Ok(p) => posts = p,
-        Err(_) => {
-            error!("Could not get posts from reddit");
-            return "Idk man".to_string();
-        }
-    }
+#[command("imretarded")]
+/// Asks foxie to get a meme from r/okbuddyretard
+async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult{
+    info!("{} asked for a retarded meme", msg.author.name);
 
-    let post = &posts.data.children[rand::random::<usize>() % posts.data.children.len()].data;
+    msg.channel_id.broadcast_typing(ctx).await?;
+    msg.reply(ctx, get_top_image_from_subreddit("okbuddyretard", TimePeriod::ThisMonth).await).await?;
 
-    match &post.url {
-        Some(s) => s.to_owned(),
-        None => "idk, man".to_string(),
-    }
+    Ok(())
+}
+
+#[command]
+#[checks(is_bot_owner)]
+/// Asks foxie from some that good-good
+async fn hentai(ctx: &Context, msg: &Message) -> CommandResult{
+    info!("{} asked for hentai", msg.author.name);
+
+    msg.channel_id.broadcast_typing(ctx).await?;
+    msg.reply(ctx, get_top_image_from_subreddit("hentai", TimePeriod::ThisWeek).await).await?;
+
+    Ok(())
+}
+
+#[command]
+#[checks(is_bot_owner)]
+/// Asks foxie for some that good-good, but for girls
+async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult{
+    info!("{} asked for nearly nude men", msg.author.name);
+
+    msg.channel_id.broadcast_typing(ctx).await?;
+    msg.reply(ctx, get_top_image_from_subreddit("nearlynudemen", TimePeriod::ThisWeek).await).await?;
+
+    Ok(())
 }

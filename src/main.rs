@@ -1,3 +1,4 @@
+use serenity::model::prelude::Ready;
 use std::collections::HashSet;
 use std::env;
 use std::fs::{File, OpenOptions};
@@ -8,15 +9,19 @@ use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
     Args, CommandGroup, CommandResult, help_commands, HelpOptions, macros::help, StandardFramework,
 };
+use serenity::model::gateway::Activity;
 use serenity::model::channel::Message;
 use serenity::model::id::UserId;
 use simplelog::*;
+use serenity::model::user::OnlineStatus;
 
 use fun::FUN_GROUP;
 use math::MATH_GROUP;
 
 mod fun;
 mod math;
+mod checks;
+mod reddit_helpers;
 
 #[help]
 async fn help(
@@ -34,7 +39,11 @@ async fn help(
 struct Handler;
 
 #[async_trait]
-impl EventHandler for Handler {}
+impl EventHandler for Handler {
+    async fn ready(&self, ctx: Context, _bot_status: Ready){
+        ctx.set_presence(Some(Activity::listening("your mom moaning")), OnlineStatus::Online).await;
+    }
+}
 
 async fn run_bot(){
     let token;
@@ -47,7 +56,10 @@ async fn run_bot(){
     }
 
     let framework = StandardFramework::new()
-        .configure(|c| c.prefix("!"))
+        .configure(|c| {
+            c.prefix("!")
+            .case_insensitivity(true)
+        })
         .group(&MATH_GROUP)
         .group(&FUN_GROUP)
         .help(&HELP);
@@ -71,7 +83,6 @@ async fn main() {
             WriteLogger::new(LevelFilter::Info, Config::default(), OpenOptions::new().write(true).create(true).open("log.txt").expect("Could not open log file")),
             TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
     ]).expect("Could not set up logger");
-    error!("test");
 
     run_bot().await;
 }
