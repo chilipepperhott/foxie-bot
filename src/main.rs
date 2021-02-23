@@ -46,8 +46,14 @@ async fn main() {
     ]).expect("Could not set up logger");
     error!("test");
 
-    let args: Vec<String> = env::args().collect();
-    let token = args[1].clone();
+    let token;
+    match env::var("FOXIE_TOKEN"){
+        Ok(t) => token = t,
+        Err(_) => {
+            error!("Could not get bot token from env");
+            return;
+        }
+    }
 
     let framework = StandardFramework::new()
         .configure(|c| c.prefix("!"))
