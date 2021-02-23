@@ -7,20 +7,20 @@ use log::error;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
-    Args, CommandGroup, CommandResult, help_commands, HelpOptions, macros::help, StandardFramework,
+    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
 };
-use serenity::model::gateway::Activity;
 use serenity::model::channel::Message;
+use serenity::model::gateway::Activity;
 use serenity::model::id::UserId;
-use simplelog::*;
 use serenity::model::user::OnlineStatus;
+use simplelog::*;
 
 use fun::FUN_GROUP;
 use math::MATH_GROUP;
 
+mod checks;
 mod fun;
 mod math;
-mod checks;
 mod reddit_helpers;
 
 #[help]
@@ -40,14 +40,18 @@ struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, _bot_status: Ready){
-        ctx.set_presence(Some(Activity::listening("your mom moaning")), OnlineStatus::Online).await;
+    async fn ready(&self, ctx: Context, _bot_status: Ready) {
+        ctx.set_presence(
+            Some(Activity::listening("your mom moaning")),
+            OnlineStatus::Online,
+        )
+        .await;
     }
 }
 
-async fn run_bot(){
+async fn run_bot() {
     let token;
-    match env::var("FOXIE_TOKEN"){
+    match env::var("FOXIE_TOKEN") {
         Ok(t) => token = t,
         Err(_) => {
             error!("Could not get bot token from env");
@@ -56,10 +60,7 @@ async fn run_bot(){
     }
 
     let framework = StandardFramework::new()
-        .configure(|c| {
-            c.prefix("!")
-            .case_insensitivity(true)
-        })
+        .configure(|c| c.prefix("!").case_insensitivity(true))
         .group(&MATH_GROUP)
         .group(&FUN_GROUP)
         .help(&HELP);
@@ -78,12 +79,19 @@ async fn run_bot(){
 #[tokio::main]
 async fn main() {
     // Setup Logging
-    CombinedLogger::init(
-        vec![
-            WriteLogger::new(LevelFilter::Info, Config::default(), OpenOptions::new().write(true).create(true).open("log.txt").expect("Could not open log file")),
-            TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
-    ]).expect("Could not set up logger");
+    CombinedLogger::init(vec![
+        WriteLogger::new(
+            LevelFilter::Info,
+            Config::default(),
+            OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open("log.txt")
+                .expect("Could not open log file"),
+        ),
+        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
+    ])
+    .expect("Could not set up logger");
 
     run_bot().await;
 }
-

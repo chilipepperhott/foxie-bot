@@ -1,12 +1,15 @@
+use super::checks::IS_BOT_OWNER_CHECK;
+use super::reddit_helpers::*;
+use log::{error, info};
+use meval::ContextProvider;
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
 use serenity::client::Context;
-use serenity::framework::standard::{macros::{command, group}, CommandResult, Args};
+use serenity::framework::standard::{
+    macros::{command, group},
+    Args, CommandResult,
+};
 use serenity::model::channel::Message;
-use meval::ContextProvider;
-use log::{info, error};
-use super::checks::IS_BOT_OWNER_CHECK;
-use super::reddit_helpers::*;
 
 const HOT_PHRASES: &[&str] = &[
     "I need you right now.",
@@ -120,18 +123,26 @@ async fn meme(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for a meme", msg.author.name);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, get_top_image_from_subreddit("memes", TimePeriod::ThisWeek).await).await?;
+    msg.reply(
+        ctx,
+        get_top_image_from_subreddit("memes", TimePeriod::ThisWeek).await,
+    )
+    .await?;
 
     Ok(())
 }
 
 #[command("imretarded")]
 /// Asks foxie to get a meme from r/okbuddyretard
-async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult{
+async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for a retarded meme", msg.author.name);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, get_top_image_from_subreddit("okbuddyretard", TimePeriod::ThisMonth).await).await?;
+    msg.reply(
+        ctx,
+        get_top_image_from_subreddit("okbuddyretard", TimePeriod::ThisMonth).await,
+    )
+    .await?;
 
     Ok(())
 }
@@ -139,11 +150,15 @@ async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult{
 #[command]
 #[checks(is_bot_owner)]
 /// Asks foxie from some that good-good
-async fn hentai(ctx: &Context, msg: &Message) -> CommandResult{
+async fn hentai(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for hentai", msg.author.name);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, get_top_image_from_subreddit("hentai", TimePeriod::ThisWeek).await).await?;
+    msg.reply(
+        ctx,
+        get_top_image_from_subreddit("hentai", TimePeriod::ThisWeek).await,
+    )
+    .await?;
 
     Ok(())
 }
@@ -151,11 +166,15 @@ async fn hentai(ctx: &Context, msg: &Message) -> CommandResult{
 #[command]
 #[checks(is_bot_owner)]
 /// Asks foxie for some that good-good, but for girls
-async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult{
+async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for nearly nude men", msg.author.name);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, get_top_image_from_subreddit("nearlynudemen", TimePeriod::ThisWeek).await).await?;
+    msg.reply(
+        ctx,
+        get_top_image_from_subreddit("nearlynudemen", TimePeriod::ThisWeek).await,
+    )
+    .await?;
 
     Ok(())
 }
