@@ -36,16 +36,7 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {}
 
-#[tokio::main]
-async fn main() {
-    // Setup Logging
-    CombinedLogger::init(
-        vec![
-            WriteLogger::new(LevelFilter::Info, Config::default(), OpenOptions::new().write(true).create(true).open("log.txt").expect("Could not open log file")),
-            TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
-    ]).expect("Could not set up logger");
-    error!("test");
-
+async fn run_bot(){
     let token;
     match env::var("FOXIE_TOKEN"){
         Ok(t) => token = t,
@@ -71,3 +62,17 @@ async fn main() {
         error!("An error occurred while running the client: {:?}", why);
     }
 }
+
+#[tokio::main]
+async fn main() {
+    // Setup Logging
+    CombinedLogger::init(
+        vec![
+            WriteLogger::new(LevelFilter::Info, Config::default(), OpenOptions::new().write(true).create(true).open("log.txt").expect("Could not open log file")),
+            TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
+    ]).expect("Could not set up logger");
+    error!("test");
+
+    run_bot().await;
+}
+
