@@ -8,7 +8,7 @@ pub async fn get_top_image_from_subreddit(subreddit: &str, time_period: TimePeri
     let subreddit = Subreddit::new(subreddit);
     let posts;
     match subreddit
-        .top(45, Some(FeedOption::new().period(time_period)))
+        .top(300, Some(FeedOption::new().period(time_period)))
         .await
     {
         Ok(p) => posts = p,

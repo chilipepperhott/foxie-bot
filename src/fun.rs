@@ -1,4 +1,4 @@
-use super::checks::IS_BOT_OWNER_CHECK;
+use super::checks::IS_BOT_OWNER_OR_GUEST_CHECK;
 use super::reddit_helpers::*;
 use log::{error, info};
 use meval::ContextProvider;
@@ -148,7 +148,7 @@ async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
 }
 
 #[command]
-#[checks(is_bot_owner)]
+#[checks(is_bot_owner_or_guest)]
 /// Asks foxie from some that good-good
 async fn hentai(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for hentai", msg.author.name);
@@ -164,7 +164,7 @@ async fn hentai(ctx: &Context, msg: &Message) -> CommandResult {
 }
 
 #[command]
-#[checks(is_bot_owner)]
+#[checks(is_bot_owner_or_guest)]
 /// Asks foxie for some that good-good, but for girls
 async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
     info!("{} asked for nearly nude men", msg.author.name);
