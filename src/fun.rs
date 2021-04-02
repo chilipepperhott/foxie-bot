@@ -1,7 +1,6 @@
 use super::checks::IS_BOT_OWNER_OR_GUEST_CHECK;
 use super::reddit_helpers::*;
 use log::{error, info};
-use meval::ContextProvider;
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
 use serenity::client::Context;
@@ -61,7 +60,7 @@ async fn hot(ctx: &Context, msg: &Message) -> CommandResult {
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,
-        HOT_PHRASES[rand::random::<usize>() % HOT_PHRASES.len()].clone(),
+        &(HOT_PHRASES[rand::random::<usize>() % HOT_PHRASES.len()]),
     )
     .await?;
 
@@ -113,9 +112,7 @@ async fn get_roast() -> String {
 }
 
 fn get_preset_random() -> String {
-    ROASTS[rand::random::<usize>() % ROASTS.len()]
-        .clone()
-        .to_string()
+    (ROASTS[rand::random::<usize>() % ROASTS.len()]).to_string()
 }
 
 #[command]
@@ -150,14 +147,13 @@ async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 /// Asks foxie for a uwuified version of text
-async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult{
+async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let text = args.rest();
 
     info!("{} asked to uwuify \"{}\"", msg.author.name, text);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx,
-    uwuify_str_sse(text)).await?;
+    msg.reply(ctx, uwuify_str_sse(text)).await?;
 
     Ok(())
 }

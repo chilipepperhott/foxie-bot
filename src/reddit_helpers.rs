@@ -1,4 +1,4 @@
-use log::{error, info};
+use log::error;
 use roux::subreddit::responses::submissions::Submissions;
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
@@ -19,7 +19,7 @@ pub async fn get_top_image_from_subreddit(subreddit: &str, time_period: TimePeri
     }
 
     match find_image_in_posts(&posts) {
-        Some(s) => s.to_owned(),
+        Some(s) => s,
         None => "idk, man".to_string(),
     }
 }
@@ -27,7 +27,7 @@ pub async fn get_top_image_from_subreddit(subreddit: &str, time_period: TimePeri
 fn find_image_in_posts(posts: &Submissions) -> Option<String> {
     let mut tries: u8 = 30;
     let mut post = &posts.data.children[rand::random::<usize>() % posts.data.children.len()].data;
-    while !post.url.is_none() && !is_url_image(post.url.to_owned().unwrap()) && tries > 0 {
+    while post.url.is_some() && !is_url_image(post.url.to_owned().unwrap()) && tries > 0 {
         post = &posts.data.children[rand::random::<usize>() % posts.data.children.len()].data;
         tries -= 1;
     }
@@ -36,8 +36,8 @@ fn find_image_in_posts(posts: &Submissions) -> Option<String> {
 }
 
 fn is_url_image(url: String) -> bool {
-    match &url[url.len() - 3..url.len()] {
-        ".gif" | ".jpg" | "jpeg" | ".png" => true,
-        _ => false,
-    }
+    matches!(
+        &url[url.len() - 3..url.len()],
+        ".gif" | ".jpg" | "jpeg" | ".png"
+    )
 }

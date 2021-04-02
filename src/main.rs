@@ -1,12 +1,12 @@
 use std::collections::HashSet;
 use std::env;
-use std::fs::{File, OpenOptions};
+use std::fs::OpenOptions;
 
 use log::error;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
-    Args, CommandGroup, CommandResult, help_commands, HelpOptions, macros::help, StandardFramework,
+    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
 };
 use serenity::model::channel::Message;
 use serenity::model::gateway::Activity;
@@ -45,7 +45,7 @@ impl EventHandler for Handler {
             Some(Activity::listening("your mom moaning")),
             OnlineStatus::Online,
         )
-            .await;
+        .await;
     }
 }
 
@@ -93,7 +93,7 @@ async fn main() {
         ),
         TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
     ])
-        .expect("Could not set up logger");
+    .expect("Could not set up logger");
 
     run_bot().await;
 }
