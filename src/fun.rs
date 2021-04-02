@@ -10,6 +10,7 @@ use serenity::framework::standard::{
     Args, CommandResult,
 };
 use serenity::model::channel::Message;
+use uwuifier::uwuify_str_sse;
 
 const HOT_PHRASES: &[&str] = &[
     "I need you right now.",
@@ -51,7 +52,7 @@ const ROASTS: &[&str] = &[
     "awww don’t hate me cause i’m beatiful, maybe if you got rid of the ol yee yee ass haircut you got, you’d get some bitches on ya dick, oh, better yet, maybe tanisha would call your dog ass if she ever stop fucking with that brain surgeon or lawyer she fuckin with,"];
 
 #[group]
-#[commands(hot, roast, meme, retard_meme, hentai, hotmen)]
+#[commands(hot, roast, meme, retard_meme, hentai, hotmen, uwuify)]
 struct Fun;
 
 #[command]
@@ -143,6 +144,20 @@ async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
         get_top_image_from_subreddit("okbuddyretard", TimePeriod::ThisMonth).await,
     )
     .await?;
+
+    Ok(())
+}
+
+#[command]
+/// Asks foxie for a uwuified version of text
+async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult{
+    let text = args.rest();
+
+    info!("{} asked to uwuify \"{}\"", msg.author.name, text);
+
+    msg.channel_id.broadcast_typing(ctx).await?;
+    msg.reply(ctx,
+    uwuify_str_sse(text)).await?;
 
     Ok(())
 }

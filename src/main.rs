@@ -1,4 +1,3 @@
-use serenity::model::prelude::Ready;
 use std::collections::HashSet;
 use std::env;
 use std::fs::{File, OpenOptions};
@@ -7,11 +6,12 @@ use log::error;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
-    help_commands, macros::help, Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
+    Args, CommandGroup, CommandResult, help_commands, HelpOptions, macros::help, StandardFramework,
 };
 use serenity::model::channel::Message;
 use serenity::model::gateway::Activity;
 use serenity::model::id::UserId;
+use serenity::model::prelude::Ready;
 use serenity::model::user::OnlineStatus;
 use simplelog::*;
 
@@ -45,7 +45,7 @@ impl EventHandler for Handler {
             Some(Activity::listening("your mom moaning")),
             OnlineStatus::Online,
         )
-        .await;
+            .await;
     }
 }
 
@@ -78,6 +78,8 @@ async fn run_bot() {
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv().ok();
+
     // Setup Logging
     CombinedLogger::init(vec![
         WriteLogger::new(
@@ -91,7 +93,7 @@ async fn main() {
         ),
         TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
     ])
-    .expect("Could not set up logger");
+        .expect("Could not set up logger");
 
     run_bot().await;
 }
