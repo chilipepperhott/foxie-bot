@@ -1,5 +1,4 @@
-use super::checks::IS_BOT_OWNER_OR_GUEST_CHECK;
-use super::reddit_helpers::*;
+use super::{checks::IS_BOT_OWNER_OR_GUEST_CHECK, reddit_helpers::*};
 use log::{error, info};
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
@@ -153,7 +152,12 @@ async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     info!("{} asked to uwuify \"{}\"", msg.author.name, text);
 
     msg.channel_id.broadcast_typing(ctx).await?;
-    msg.reply(ctx, uwuify_str_sse(text)).await?;
+
+    if let Err(err) = msg.delete(ctx).await{
+        error!("Could not delete message: {}", err);
+    }
+
+    msg.channel_id.send_message(ctx, |m|m.content(uwuify_str_sse(text))).await?;
 
     Ok(())
 }

@@ -1,7 +1,7 @@
 [package]
 name = "foxie"
 version = "0.1.0"
-authors = ["Elijah Potter <sirius.potter522@gmail.com>"]
+authors = ["Elijah Potter <elijah.sirius@protonmail.com>"]
 edition = "2018"
 
 [profile.release]
