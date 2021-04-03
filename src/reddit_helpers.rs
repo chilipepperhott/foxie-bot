@@ -1,4 +1,3 @@
-use log::error;
 use roux::subreddit::responses::submissions::Submissions;
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
@@ -13,7 +12,6 @@ pub async fn get_top_image_from_subreddit(subreddit: &str, time_period: TimePeri
     {
         Ok(p) => posts = p,
         Err(_) => {
-            error!("Could not get posts from reddit");
             return "Idk man".to_string();
         }
     }

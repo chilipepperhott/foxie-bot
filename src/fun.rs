@@ -1,5 +1,4 @@
 use super::{checks::IS_BOT_OWNER_OR_GUEST_CHECK, reddit_helpers::*};
-use log::{error, info};
 use roux::util::{FeedOption, TimePeriod};
 use roux::Subreddit;
 use serenity::client::Context;
@@ -69,8 +68,6 @@ async fn hot(ctx: &Context, msg: &Message) -> CommandResult {
 #[command("fuckyoufoxie")]
 /// Asks Foxie to roast you
 async fn roast(ctx: &Context, msg: &Message) -> CommandResult {
-    info!("{} asked for a roast", msg.author.name);
-
     msg.channel_id.broadcast_typing(ctx).await?;
     let roast = get_roast().await;
 
@@ -90,7 +87,6 @@ async fn get_roast() -> String {
     {
         Ok(p) => posts = p,
         Err(_) => {
-            error!("Could not get posts from reddit");
             return get_preset_random();
         }
     }
@@ -104,7 +100,6 @@ async fn get_roast() -> String {
     }
 
     if !post.selftext.is_empty() {
-        error!("Could not find a good roast, using predefined one...");
         return get_preset_random();
     }
     post.title.clone()
@@ -117,8 +112,6 @@ fn get_preset_random() -> String {
 #[command]
 /// Asks Foxie for a meme
 async fn meme(ctx: &Context, msg: &Message) -> CommandResult {
-    info!("{} asked for a meme", msg.author.name);
-
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,
@@ -132,8 +125,6 @@ async fn meme(ctx: &Context, msg: &Message) -> CommandResult {
 #[command("imretarded")]
 /// Asks foxie to get a meme from r/okbuddyretard
 async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
-    info!("{} asked for a retarded meme", msg.author.name);
-
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,
@@ -149,15 +140,13 @@ async fn retard_meme(ctx: &Context, msg: &Message) -> CommandResult {
 async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let text = args.rest();
 
-    info!("{} asked to uwuify \"{}\"", msg.author.name, text);
-
     msg.channel_id.broadcast_typing(ctx).await?;
 
-    if let Err(err) = msg.delete(ctx).await{
-        error!("Could not delete message: {}", err);
-    }
+    let _ = msg.delete(ctx).await;
 
-    msg.channel_id.send_message(ctx, |m|m.content(uwuify_str_sse(text))).await?;
+    msg.channel_id
+        .send_message(ctx, |m| m.content(uwuify_str_sse(text)))
+        .await?;
 
     Ok(())
 }
@@ -166,8 +155,6 @@ async fn uwuify(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 #[checks(is_bot_owner_or_guest)]
 /// Asks foxie from some that good-good
 async fn hentai(ctx: &Context, msg: &Message) -> CommandResult {
-    info!("{} asked for hentai", msg.author.name);
-
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,
@@ -182,8 +169,6 @@ async fn hentai(ctx: &Context, msg: &Message) -> CommandResult {
 #[checks(is_bot_owner_or_guest)]
 /// Asks foxie for some that good-good, but for girls
 async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
-    info!("{} asked for nearly nude men", msg.author.name);
-
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,

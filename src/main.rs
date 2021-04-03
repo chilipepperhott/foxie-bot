@@ -1,8 +1,6 @@
 use std::collections::HashSet;
 use std::env;
-use std::fs::OpenOptions;
 
-use log::error;
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
 use serenity::framework::standard::{
@@ -13,7 +11,6 @@ use serenity::model::gateway::Activity;
 use serenity::model::id::UserId;
 use serenity::model::prelude::Ready;
 use serenity::model::user::OnlineStatus;
-use simplelog::*;
 
 use fun::FUN_GROUP;
 use math::MATH_GROUP;
@@ -54,7 +51,6 @@ async fn run_bot() {
     match env::var("FOXIE_TOKEN") {
         Ok(t) => token = t,
         Err(_) => {
-            error!("Could not get bot token from env");
             return;
         }
     }
@@ -71,29 +67,12 @@ async fn run_bot() {
         .await
         .expect("Error creating client");
 
-    if let Err(why) = client.start().await {
-        error!("An error occurred while running the client: {:?}", why);
-    }
+    client.start().await.unwrap();
 }
 
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
-
-    // Setup Logging
-    CombinedLogger::init(vec![
-        WriteLogger::new(
-            LevelFilter::Info,
-            Config::default(),
-            OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open("log.txt")
-                .expect("Could not open log file"),
-        ),
-        TermLogger::new(LevelFilter::Info, Config::default(), TerminalMode::Stdout),
-    ])
-    .expect("Could not set up logger");
 
     run_bot().await;
 }
