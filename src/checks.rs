@@ -3,20 +3,12 @@ use serenity::framework::standard::{macros::check, Reason};
 use serenity::model::prelude::Message;
 
 const OWNERNAME: &str = "ChiliPepperHott#4147";
+const LEE_NAME: &str = "ToxicGarbage#191"; 
 
 #[check("Owns bot")]
 pub async fn is_bot_owner_or_guest(ctx: &Context, msg: &Message) -> Result<(), Reason> {
-    if let Ok(b) = msg
-        .author
-        .has_role(ctx, 810753616302309376, 810759629608058889)
-        .await
-    {
-        if b {
-            return Ok(());
-        }
-    }
-
-    if format!("{}#{}", msg.author.name, msg.author.discriminator) != OWNERNAME {
+    let name = format!("{}#{}", msg.author.name, msg.author.discriminator);
+    if !(name == LEE_NAME || name == OWNERNAME) {
         return Err(Reason::UserAndLog {
             user: msg.author.name.to_owned(),
             log: "You are not the bot owner".to_string(),

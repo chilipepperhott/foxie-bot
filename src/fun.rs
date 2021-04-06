@@ -49,7 +49,7 @@ const ROASTS: &[&str] = &[
     "awww don’t hate me cause i’m beatiful, maybe if you got rid of the ol yee yee ass haircut you got, you’d get some bitches on ya dick, oh, better yet, maybe tanisha would call your dog ass if she ever stop fucking with that brain surgeon or lawyer she fuckin with,"];
 
 #[group]
-#[commands(hot, roast, meme, retard_meme, hentai, hotmen, uwuify)]
+#[commands(hot, roast, meme, retard_meme, hentai, hotmen, uwuify, echo)]
 struct Fun;
 
 #[command]
@@ -175,6 +175,23 @@ async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
         get_top_image_from_subreddit("nearlynudemen", TimePeriod::ThisWeek).await,
     )
     .await?;
+
+    Ok(())
+}
+
+#[command]
+#[checks(is_bot_owner_or_guest)]
+/// Reposts content of message as foxie
+async fn echo(ctx: &Context, msg: &Message, args: Args) -> CommandResult{
+    let text = args.rest();
+
+    msg.channel_id.broadcast_typing(ctx).await?;
+
+    let _ = msg.delete(ctx).await;
+
+    msg.channel_id
+        .send_message(ctx, |m| m.content(text))
+        .await?;
 
     Ok(())
 }
