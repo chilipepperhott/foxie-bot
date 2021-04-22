@@ -49,7 +49,7 @@ const ROASTS: &[&str] = &[
     "awww don’t hate me cause i’m beatiful, maybe if you got rid of the ol yee yee ass haircut you got, you’d get some bitches on ya dick, oh, better yet, maybe tanisha would call your dog ass if she ever stop fucking with that brain surgeon or lawyer she fuckin with,"];
 
 #[group]
-#[commands(hot, roast, meme, retard_meme, hentai, hotmen, uwuify, echo)]
+#[commands(hot, roast, meme, retard_meme, hentai, hotmen, animedude, uwuify, echo)]
 struct Fun;
 
 #[command]
