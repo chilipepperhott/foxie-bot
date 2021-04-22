@@ -181,12 +181,12 @@ async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 #[checks(is_bot_owner_or_guest)]
-/// Asks foxie for some that good-good, but for girls
+/// Asks foxie for some that good-good, but for weeb girls
 async fn animedude(ctx: &Context, msg: &Message) -> CommandResult {
     msg.channel_id.broadcast_typing(ctx).await?;
     msg.reply(
         ctx,
-        get_top_image_from_subreddit("hotanimeguys", TimePeriod::ThisWeek).await,
+        get_top_image_from_subreddit("animeboys", TimePeriod::ThisWeek).await,
     )
         .await?;
 
