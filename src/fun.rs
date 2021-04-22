@@ -181,6 +181,20 @@ async fn hotmen(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 #[checks(is_bot_owner_or_guest)]
+/// Asks foxie for some that good-good, but for girls
+async fn animedude(ctx: &Context, msg: &Message) -> CommandResult {
+    msg.channel_id.broadcast_typing(ctx).await?;
+    msg.reply(
+        ctx,
+        get_top_image_from_subreddit("hotanimeguys", TimePeriod::ThisWeek).await,
+    )
+        .await?;
+
+    Ok(())
+}
+
+#[command]
+#[checks(is_bot_owner_or_guest)]
 /// Reposts content of message as foxie
 async fn echo(ctx: &Context, msg: &Message, args: Args) -> CommandResult{
     let text = args.rest();
