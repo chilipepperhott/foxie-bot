@@ -14,11 +14,15 @@ use serenity::model::user::OnlineStatus;
 
 use fun::FUN_GROUP;
 use math::MATH_GROUP;
+use kinks::KINKS_GROUP;
+use actions::ACTIONS_GROUP;
 
 mod checks;
 mod fun;
 mod math;
 mod reddit_helpers;
+mod kinks;
+mod actions;
 
 #[help]
 async fn help(
@@ -59,6 +63,8 @@ async fn run_bot() {
         .configure(|c| c.prefix("!").case_insensitivity(true))
         .group(&MATH_GROUP)
         .group(&FUN_GROUP)
+        .group(&KINKS_GROUP)
+        .group(&ACTIONS_GROUP)
         .help(&HELP);
 
     let mut client = Client::builder(token)

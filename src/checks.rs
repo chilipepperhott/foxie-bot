@@ -3,7 +3,7 @@ use serenity::framework::standard::{macros::check, Reason};
 use serenity::model::prelude::Message;
 
 const OWNERNAME: &str = "ChiliPepperHott#4147";
-const LEE_NAME: &str = "ToxicGarbage#191";
+const LEE_NAME: &str = "ToxicGarbage#1448";
 const MICHELLE_NAME: &str = "Mochi#3133";
 const CARSON_NAME: &str = "ice#4065";
 
